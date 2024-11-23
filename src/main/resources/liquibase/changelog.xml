@@ -34,6 +34,8 @@
             </column>
         </createTable>
 
+        <createSequence sequenceName="team_member_seq" startValue="1" incrementBy="1"/>
+
         <createTable tableName="task">
             <column name="id" type="${long.type}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -46,9 +48,7 @@
             </column>
             <column name="start_date" type="${timestamp.type}"/>
             <column name="end_date" type="${timestamp.type}"/>
-            <column name="due_date" type="${timestamp.type}">
-                <constraints nullable="false"/>
-            </column>
+            <column name="due_date" type="${timestamp.type}"/>
             <column name="priority" type="${string.type}">
                 <constraints nullable="false"/>
             </column>
@@ -72,6 +72,8 @@
             </column>
         </createTable>
 
+        <createSequence sequenceName="task_seq" startValue="1" incrementBy="1"/>
+
         <addForeignKeyConstraint baseTableName="task"
                                  baseColumnNames="assigned_to"
                                  constraintName="fk_task_assigned_to"
@@ -89,6 +91,15 @@
                                  constraintName="fk_task_last_modified_by"
                                  referencedTableName="team_member"
                                  referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="ADD-ADMIN-USER" author="Denis3119">
+        <insert tableName="team_member">
+            <column name="id" valueComputed="nextval('team_member_seq')"/>
+            <column name="password" value="$2y$10$lJU3/uhs5pHG90JUJhcV.ePFntP.n/Hk6gsaJurNi2H47OFP6b/FS"/>
+            <column name="username" value="admin"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

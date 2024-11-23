@@ -1,9 +1,10 @@
 package my.denis3119.task_api.services.impl
 
+import jakarta.persistence.EntityNotFoundException
 import my.denis3119.task_api.configs.JwtUtil
-import my.denis3119.task_api.dtos.RegisterDto
+import my.denis3119.task_api.dtos.auth.LoginDto
+import my.denis3119.task_api.dtos.auth.RegisterDto
 import my.denis3119.task_api.enums.UserRole
-import my.denis3119.task_api.exceptions.EntityNotFoundException
 import my.denis3119.task_api.models.TeamMember
 import my.denis3119.task_api.repositories.TeamMemberRepository
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -36,13 +37,13 @@ class UserDetailsServiceImpl(
         return teamMemberRepository.save(newUser)
     }
 
-    fun login(username: String, password: String): String {
-        val userDetails = loadUserByUsername(username)
-        if (!BCryptPasswordEncoder().matches(password, userDetails.password)) {
+    fun login(loginDto: LoginDto): String {
+        val userDetails = loadUserByUsername(loginDto.username)
+        if (!BCryptPasswordEncoder().matches(loginDto.password, userDetails.password)) {
             throw IllegalArgumentException("Invalid credentials")
         }
 
-        val token = JwtUtil.generateToken(username)
+        val token = JwtUtil.generateToken(loginDto.username)
         return token
     }
 }

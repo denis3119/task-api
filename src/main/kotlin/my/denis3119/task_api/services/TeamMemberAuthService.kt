@@ -1,9 +1,10 @@
 package my.denis3119.task_api.services
 
-import my.denis3119.task_api.dtos.RegisterDto
-import my.denis3119.task_api.dtos.TokenDto
+import my.denis3119.task_api.dtos.auth.LoginDto
+import my.denis3119.task_api.dtos.auth.RegisterDto
+import my.denis3119.task_api.dtos.auth.TokenDto
 
 interface TeamMemberAuthService {
     fun register(registerDto: RegisterDto)
-    fun login(username: String, password: String): TokenDto
+    fun login(loginDto: LoginDto): TokenDto
 }

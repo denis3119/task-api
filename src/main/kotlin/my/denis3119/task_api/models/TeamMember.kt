@@ -5,13 +5,17 @@ import jakarta.persistence.Entity
 import jakarta.persistence.EnumType.STRING
 import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType.IDENTITY
+import jakarta.persistence.GenerationType.SEQUENCE
 import jakarta.persistence.Id
+import jakarta.persistence.SequenceGenerator
 import my.denis3119.task_api.enums.UserRole
 
 @Entity
 data class TeamMember(
-    @Id @GeneratedValue(strategy = IDENTITY)
+    @Id
+    @GeneratedValue(strategy = SEQUENCE, generator = "TEAM_MEMBER_SEQ")
+    @SequenceGenerator(name = "TEAM_MEMBER_SEQ", sequenceName = "TEAM_MEMBER_SEQ", allocationSize = 1)
+    @Column(name = "ID")
     val id: Long? = null,
 
     @Column(nullable = false, name = "USERNAME", unique = true)

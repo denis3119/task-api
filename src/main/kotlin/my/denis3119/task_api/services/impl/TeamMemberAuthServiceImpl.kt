@@ -1,7 +1,8 @@
 package my.denis3119.task_api.services.impl
 
-import my.denis3119.task_api.dtos.RegisterDto
-import my.denis3119.task_api.dtos.TokenDto
+import my.denis3119.task_api.dtos.auth.LoginDto
+import my.denis3119.task_api.dtos.auth.RegisterDto
+import my.denis3119.task_api.dtos.auth.TokenDto
 import my.denis3119.task_api.enums.UserRole.USER
 import my.denis3119.task_api.services.TeamMemberAuthService
 import org.springframework.stereotype.Service
@@ -14,8 +15,8 @@ class TeamMemberAuthServiceImpl(
         userDetailsServiceImpl.registerUser(registerDto, USER)
     }
 
-    override fun login(username: String, password: String): TokenDto {
-        val token = userDetailsServiceImpl.login(username, password)
+    override fun login(loginDto: LoginDto): TokenDto {
+        val token = userDetailsServiceImpl.login(loginDto)
         return TokenDto(token)
     }
 

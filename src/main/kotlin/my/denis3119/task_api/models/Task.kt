@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
 import my.denis3119.task_api.enums.TaskPriority
 import my.denis3119.task_api.enums.TaskPriority.MEDIUM
 import my.denis3119.task_api.enums.TaskStatus
@@ -19,7 +20,10 @@ import java.time.LocalDateTime
 
 @Entity
 data class Task(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TASK_SEQ")
+    @SequenceGenerator(name = "TASK_SEQ", sequenceName = "TASK_SEQ", allocationSize = 1)
+    @Column(name = "ID")
     val id: Long? = null,
 
     @Column(nullable = false, name = "TITLE")
@@ -28,14 +32,14 @@ data class Task(
     @Column(nullable = false, name = "DESCRIPTION")
     var description: String,
 
-    @Column(nullable = false, name = "START_DATE")
+    @Column(name = "START_DATE")
     var startDate: LocalDateTime? = null,
 
-    @Column(nullable = false, name = "END_DATE")
+    @Column(name = "END_DATE")
     var endDate: LocalDateTime? = null,
 
-    @Column(nullable = false, name = "DUE_DATE")
-    var dueDate: LocalDateTime,
+    @Column(name = "DUE_DATE")
+    var dueDate: LocalDateTime? = null,
 
     @Column(nullable = false, name = "PRIORITY")
     @Enumerated(STRING)
@@ -51,17 +55,17 @@ data class Task(
 
     @Column(nullable = false, name = "CREATED_ON")
     @CreatedDate
-    val createdOn: LocalDateTime = LocalDateTime.now(),
+    val createdOn: LocalDateTime? = LocalDateTime.now(),
 
     @Column(nullable = false, name = "LAST_MODIFIED")
     @LastModifiedDate
-    val lastModified: LocalDateTime = LocalDateTime.now(),
+    val lastModified: LocalDateTime? = LocalDateTime.now(),
 
     @ManyToOne
     @JoinColumn(name = "CREATED_BY")
-    val createdBy: TeamMember,
+    val createdBy: TeamMember? = null,
 
     @ManyToOne
     @JoinColumn(name = "LAST_MODIFIED_BY")
-    val lastModifiedBy: TeamMember
+    val lastModifiedBy: TeamMember? = null
 )
