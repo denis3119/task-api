@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
-    id("org.springframework.boot") version "3.4.0"
+    id("org.springframework.boot") version "3.3.3"
     id("io.spring.dependency-management") version "1.1.6"
     kotlin("plugin.jpa") version "1.9.25"
 }
@@ -27,6 +27,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("jakarta.validation:jakarta.validation-api:3.1.0")
+    implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:4.1.4")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -39,7 +41,8 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-//    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("com.playtika.testcontainers:embedded-postgresql:3.1.9")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
