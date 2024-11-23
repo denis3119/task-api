@@ -28,6 +28,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("jakarta.validation:jakarta.validation-api:3.1.0")
 
+    implementation("org.liquibase:liquibase-core:4.30.0")
     runtimeOnly("org.postgresql:postgresql")
 
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")

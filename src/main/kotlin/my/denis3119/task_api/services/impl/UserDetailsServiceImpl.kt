@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserDetailsServiceImpl(
     private val teamMemberRepository: TeamMemberRepository,
-    private val passwordEncoder: PasswordEncoder,
-    private val jwtUtil: JwtUtil
+    private val passwordEncoder: PasswordEncoder
 ) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
@@ -43,7 +42,7 @@ class UserDetailsServiceImpl(
             throw IllegalArgumentException("Invalid credentials")
         }
 
-        val token = jwtUtil.generateToken(username)
+        val token = JwtUtil.generateToken(username)
         return token
     }
 }

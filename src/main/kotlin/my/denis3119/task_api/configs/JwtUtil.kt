@@ -1,12 +1,10 @@
 package my.denis3119.task_api.configs
 
 import io.jsonwebtoken.Jwts
-import org.springframework.stereotype.Component
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@Component
-class JwtUtil {
+object JwtUtil {
 
     private val key = Jwts.SIG.HS256.key().build()
     private val expirationTime = TimeUnit.DAYS.toMillis(100) // 100 days for testing

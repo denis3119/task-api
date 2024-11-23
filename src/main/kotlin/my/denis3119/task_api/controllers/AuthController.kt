@@ -1,6 +1,7 @@
 package my.denis3119.task_api.controllers
 
 import my.denis3119.task_api.dtos.RegisterDto
+import my.denis3119.task_api.dtos.TokenDto
 import my.denis3119.task_api.services.TeamMemberAuthService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
@@ -31,7 +32,7 @@ class AuthController(
     fun login(
         @RequestParam username: String,
         @RequestParam password: String
-    ) {
-        teamMemberAuthService.login(username, password)
+    ): TokenDto {
+        return teamMemberAuthService.login(username, password)
     }
 }
