@@ -1,0 +1,18 @@
+#spring.application.name=task-api
+#spring.datasource:
+#  driver-class-name=org.postgresql.Driver
+
+spring:
+  application:
+    name: task-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/task?reWriteBatchedInserts=true
+    username: postgres
+    password: postgres
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/changelog-master.xml
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate

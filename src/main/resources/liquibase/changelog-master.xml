@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <property name="long.type" value="BIGINT"/>
+    <property name="string.type" value="VARCHAR(255)"/>
+    <property name="string-long.type" value="VARCHAR(4096)"/>
+    <property name="text.type" value="TEXT"/>
+    <property name="shortString.type" value="VARCHAR(50)"/>
+    <property name="bigDecimal.type" value="NUMERIC(19, 2)"/>
+    <property name="bigDecimal.margin.type" value="NUMERIC(19, 4)"/>
+    <property name="timestamp.type" value="TIMESTAMP"/>
+    <property name="boolean.type" value="BOOLEAN"/>
+    <property name="longtext.type" value="LONGTEXT"/>
+    <property name="json.type" value="JSONB"/>
+    <property name="long.array.type" value="BIGINT[]"/>
+    <property name="bigDecimal.array.type" value="NUMERIC[]"/>
+    <property name="string.array.type" value="TEXT[]"/>
+    <changeSet id="1" author="denis zdasiuk">
+
+    </changeSet>
+
+</databaseChangeLog>
