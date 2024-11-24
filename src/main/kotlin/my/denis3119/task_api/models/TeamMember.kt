@@ -8,9 +8,11 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType.SEQUENCE
 import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
 import my.denis3119.task_api.enums.UserRole
 
 @Entity
+@Table(name = "TEAM_MEMBER")
 data class TeamMember(
     @Id
     @GeneratedValue(strategy = SEQUENCE, generator = "TEAM_MEMBER_SEQ")

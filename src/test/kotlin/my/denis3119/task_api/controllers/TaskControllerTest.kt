@@ -1,14 +1,23 @@
 package my.denis3119.task_api.controllers
 
+import com.fasterxml.jackson.core.type.TypeReference
 import my.denis3119.task_api.AbstractControllerTest
 import my.denis3119.task_api.dtos.task.TaskDto
 import my.denis3119.task_api.enums.TaskPriority.HIGH
+import my.denis3119.task_api.enums.TaskStatus
+import my.denis3119.task_api.enums.TaskStatus.COMPLETED
 import my.denis3119.task_api.enums.TaskStatus.IN_PROGRESS
 import my.denis3119.task_api.enums.TaskStatus.NEW
+import my.denis3119.task_api.models.Task
+import my.denis3119.task_api.models.TeamMember
 import my.denis3119.task_api.repositories.TaskRepository
+import my.denis3119.task_api.repositories.TeamMemberRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
@@ -23,6 +32,19 @@ class TaskControllerTest : AbstractControllerTest() {
 
     @Autowired
     private lateinit var taskRepository: TaskRepository
+
+    @Autowired
+    private lateinit var teamMemberRepository: TeamMemberRepository
+
+    private var userId: Long? = null
+
+    @BeforeEach
+    fun setUp() {
+        taskRepository.deleteAll()
+        teamMemberRepository.deleteAll()
+
+        userId = teamMemberRepository.save(TeamMember(name = "admin", password = "test")).id
+    }
 
     @Test
     fun createTask_positiveFlowMinimaParameters() {
@@ -66,7 +88,7 @@ class TaskControllerTest : AbstractControllerTest() {
                       "description": "Test description",
                       "priority": "HIGH",
                       "status": "NEW",
-                      "assignedToId": 1,
+                      "assignedToId": $userId,
                       "dueDate": "2025-12-12T12:12:12"
                     }
                   """.trimIndent()
@@ -81,7 +103,7 @@ class TaskControllerTest : AbstractControllerTest() {
         assertEquals("Test description", tasks.description)
         assertEquals(HIGH, tasks.priority)
         assertEquals(LocalDateTime.of(2025, 12, 12, 12, 12, 12), tasks.dueDate)
-        assertEquals(1, tasks.assignedTo?.id)
+        assertEquals(userId, tasks.assignedTo?.id)
         assertEquals(NEW, tasks.status)
         assertNotNull(tasks.id)
     }
@@ -95,7 +117,7 @@ class TaskControllerTest : AbstractControllerTest() {
         assertNull(task.assignedTo)
 
         val taskDto = mockMvc.perform(
-            post("/tasks/{taskId}/assign/{userId}", task.id, 1)
+            post("/tasks/{taskId}/assign/{userId}", task.id, userId)
         )
             .andDo { print() }
             .andExpect(status().isOk)
@@ -103,15 +125,9 @@ class TaskControllerTest : AbstractControllerTest() {
             .let { objectMapper.readValue(it, TaskDto::class.java) }
 
         assertNotNull(taskDto.assignedTo)
-        assertEquals(1, taskDto.assignedTo?.id)
+        assertEquals(userId, taskDto.assignedTo?.id)
     }
 
-    /*
-    *    @PatchMapping("/{taskId}/status")
-    fun updateTaskStatus(
-        @PathVariable taskId: Long,
-        @RequestParam status: TaskStatus
-    ): TaskDto = taskService.updateTaskStatus(taskId, status)*/
 
     @Test
     fun updateTaskStatus_positiveFlow() {
@@ -120,16 +136,62 @@ class TaskControllerTest : AbstractControllerTest() {
         val task = taskRepository.findAll().first()
 
         assertEquals(NEW, task.status)
+        assertNull(task.startDate)
+        assertNotNull(task.createdOn)
+        assertNotNull(task.lastModified)
 
-        val taskDto = mockMvc.perform(
+        var taskDto = changeStatus(task, IN_PROGRESS)
+
+        assertEquals(IN_PROGRESS, taskDto.status)
+        assertNotNull(taskDto.startDate)
+
+        taskDto = changeStatus(task, COMPLETED)
+
+        assertEquals(COMPLETED, taskDto.status)
+        assertNotNull(taskDto.endDate)
+    }
+
+    /*
+    *     @GetMapping("/list")
+    fun list(
+        @PageableDefault(size = 20)
+        @SortDefault(value = ["createdOn"], direction = DESC) pageable: Pageable
+    ): Page<TaskDto> = taskService.list(pageable)*/
+
+    @Test
+    fun list() {
+        val taskCount = 100L
+
+        createTasks(taskCount)
+
+        val result = mockMvc.perform(
+            get("/tasks/list")
+        )
+            .andDo { print() }
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsByteArray
+            .let { objectMapper.readValue(it, object : TypeReference<Page<TaskDto>>() {}) }
+
+        assertEquals(taskCount, result.totalElements)
+        assertEquals(20, result.size)
+        assertEquals(20, result.content.size)
+    }
+
+    private fun createTasks(taskCount: Long) {
+        for (i in 1..taskCount) {
+            taskRepository.save(Task(title = "Task $i", description = "Description $i", priority = HIGH, status = NEW))
+        }
+    }
+
+
+    private fun changeStatus(task: Task, status: TaskStatus): TaskDto {
+        return mockMvc.perform(
             patch("/tasks/{taskId}/status", task.id)
-                .param("status", IN_PROGRESS.name)
+                .param("status", status.name)
         )
             .andDo { print() }
             .andExpect(status().isOk)
             .andReturn().response.contentAsString
             .let { objectMapper.readValue(it, TaskDto::class.java) }
-
-        assertEquals(IN_PROGRESS, taskDto.status)
     }
 }

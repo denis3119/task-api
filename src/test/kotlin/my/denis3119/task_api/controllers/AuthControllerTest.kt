@@ -5,7 +5,6 @@ import my.denis3119.task_api.configs.JwtUtil
 import my.denis3119.task_api.dtos.auth.TokenDto
 import my.denis3119.task_api.repositories.TaskRepository
 import my.denis3119.task_api.repositories.TeamMemberRepository
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,16 +31,6 @@ class AuthControllerTest : AbstractControllerTest() {
     fun beforeEach() {
         taskRepository.deleteAll()
         teamMemberRepository.deleteAll()
-
-        assertEquals(0L, teamMemberRepository.count())
-    }
-
-    @AfterEach
-    fun afterEach() {
-        taskRepository.deleteAll()
-        teamMemberRepository.deleteAll()
-
-        assertEquals(0L, teamMemberRepository.count())
     }
 
     @Test

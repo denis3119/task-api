@@ -14,5 +14,6 @@ data class TaskDto(
     var dueDate: LocalDateTime? = null,
     var priority: TaskPriority,
     var status: TaskStatus,
-    var assignedTo: TeamMemberDto? = null
+    var assignedTo: TeamMemberDto? = null,
+    var comments: List<CommentDto> = emptyList()
 )

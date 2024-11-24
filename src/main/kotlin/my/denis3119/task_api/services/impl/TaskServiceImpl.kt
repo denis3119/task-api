@@ -10,8 +10,11 @@ import my.denis3119.task_api.models.Task
 import my.denis3119.task_api.repositories.TaskRepository
 import my.denis3119.task_api.services.TaskService
 import my.denis3119.task_api.services.TeamMemberService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class TaskServiceImpl(
@@ -35,16 +38,37 @@ class TaskServiceImpl(
     }
 
     @Transactional
-    override fun updateTaskStatus(taskId: Long, status: TaskStatus): TaskDto {
+    override fun updateTaskStatus(taskId: Long, newStatus: TaskStatus): TaskDto {
         val task = findById(taskId).apply {
-            this.status = status
+            status = newStatus
         }
+        fillDates(task, newStatus)
         return save(task)
     }
+
+    override fun list(pageable: Pageable): Page<TaskDto> {
+        return taskRepository.findAll(pageable).map { it.toDto() }
+    }
+
 
     private fun save(task: Task) = taskRepository.save(task).toDto()
 
     private fun findById(taskId: Long): Task =
         taskRepository.findById(taskId)
             .orElseThrow { EntityNotFoundException("Task with id $taskId not found") }
+
+    companion object {
+        private fun fillDates(task: Task, newStatus: TaskStatus) {
+            when (newStatus) {
+                TaskStatus.IN_PROGRESS -> task.startDate = LocalDateTime.now()
+                TaskStatus.COMPLETED -> {
+                    task.startDate = task.startDate ?: LocalDateTime.now()
+                    task.endDate = LocalDateTime.now()
+                }
+
+                else -> {
+                }
+            }
+        }
+    }
 }

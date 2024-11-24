@@ -2,6 +2,7 @@ package my.denis3119.task_api.mapper
 
 import my.denis3119.task_api.dtos.task.CreateTaskDto
 import my.denis3119.task_api.dtos.task.TaskDto
+import my.denis3119.task_api.mapper.CommentMapper.toDto
 import my.denis3119.task_api.mapper.TeamMemberMapper.toDto
 import my.denis3119.task_api.models.Task
 
@@ -24,6 +25,7 @@ object TaskMapper {
         dueDate = dueDate,
         priority = priority,
         status = status,
-        assignedTo = assignedTo?.toDto()
+        assignedTo = assignedTo?.toDto(),
+        comments = comments.map { it.toDto() }
     )
 }

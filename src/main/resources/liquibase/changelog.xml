@@ -18,8 +18,8 @@
     <property name="bigDecimal.array.type" value="NUMERIC[]"/>
     <property name="string.array.type" value="TEXT[]"/>
 
-    <changeSet id="CREATE-TABLES" author="Denis3119">
-        <createTable tableName="team_member">
+    <changeSet id="CREATE-TEAM_MEMBER-TABLE" author="Denis3119">
+        <createTable tableName="TEAM_MEMBER">
             <column name="id" type="${long.type}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -35,8 +35,10 @@
         </createTable>
 
         <createSequence sequenceName="team_member_seq" startValue="1" incrementBy="1"/>
+    </changeSet>
 
-        <createTable tableName="task">
+    <changeSet id="CREATE-TASK-TABLE" author="Denis3119">
+        <createTable tableName="TASK">
             <column name="id" type="${long.type}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -89,6 +91,66 @@
         <addForeignKeyConstraint baseTableName="task"
                                  baseColumnNames="last_modified_by"
                                  constraintName="fk_task_last_modified_by"
+                                 referencedTableName="team_member"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <!--
+    @Entity
+@Table(name = "COMMENT")
+data class Comment(
+    @Id
+    @GeneratedValue(strategy = SEQUENCE, generator = "COMMENT_SEQ")
+    @SequenceGenerator(name = "COMMENT_SEQ", sequenceName = "COMMENT_SEQ", allocationSize = 1)
+    @Column(name = "ID")
+    val id: Long? = null,
+
+    @Column(nullable = false, name = "TEXT")
+    var text: String,
+
+    @ManyToOne
+    @JoinColumn(name = "TASK_ID")
+    var task: Task,
+
+    @ManyToOne
+    @JoinColumn(name = "AUTHOR_ID")
+    var author: TeamMember,
+
+    @Column(name = "CREATED_AT")
+    @CreatedDate
+    var createdAt: LocalDateTime? = null
+)-->
+    <changeSet id="CREATE-COMMENT-TABLE" author="Denis3119">
+        <createTable tableName="comment">
+            <column name="id" type="${long.type}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="task_id" type="${long.type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="${text.type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="${timestamp.type}">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="author_id" type="${long.type}">
+                <constraints nullable="true"/>
+            </column>
+
+        </createTable>
+
+        <createSequence sequenceName="comment_seq" startValue="1" incrementBy="1"/>
+
+        <addForeignKeyConstraint baseTableName="comment"
+                                 baseColumnNames="task_id"
+                                 constraintName="fk_comment_task_id"
+                                 referencedTableName="task"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="comment"
+                                 baseColumnNames="author_id"
+                                 constraintName="fk_comment_author_id"
                                  referencedTableName="team_member"
                                  referencedColumnNames="id"/>
     </changeSet>

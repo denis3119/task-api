@@ -1,5 +1,6 @@
 package my.denis3119.task_api.models
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType.STRING
@@ -9,7 +10,9 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
 import my.denis3119.task_api.enums.TaskPriority
 import my.denis3119.task_api.enums.TaskPriority.MEDIUM
 import my.denis3119.task_api.enums.TaskStatus
@@ -19,6 +22,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 
 @Entity
+@Table(name = "TASK")
 data class Task(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TASK_SEQ")
@@ -52,6 +56,9 @@ data class Task(
     @ManyToOne
     @JoinColumn(name = "ASSIGNED_TO")
     var assignedTo: TeamMember? = null,
+
+    @OneToMany(mappedBy = "task", orphanRemoval = true, cascade = [CascadeType.ALL])
+    var comments: MutableList<Comment> = mutableListOf(),
 
     @Column(nullable = false, name = "CREATED_ON")
     @CreatedDate

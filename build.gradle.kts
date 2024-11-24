@@ -30,6 +30,12 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:4.1.4")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
 
+// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+
+
+
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     implementation("org.liquibase:liquibase-core:4.30.0")

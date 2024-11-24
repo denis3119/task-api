@@ -14,11 +14,13 @@ class SecurityConfig(
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.csrf().disable()
+        http.csrf { it.disable() }
 
         http.authorizeHttpRequests { auth ->
             auth.requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/api/tasks/**").authenticated()
+                .requestMatchers("/swagger-ui.html").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
         }
             .sessionManagement { it.sessionCreationPolicy(STATELESS) }
