@@ -22,7 +22,7 @@ class UserDetailsServiceImpl(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = teamMemberRepository.findByName(username) ?: throw EntityNotFoundException("User not found")
+        val user = teamMemberRepository.findByName(username).orElseThrow { EntityNotFoundException("User not found") }
 
         return User(
             user.name,

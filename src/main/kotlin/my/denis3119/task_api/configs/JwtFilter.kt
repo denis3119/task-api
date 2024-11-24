@@ -3,6 +3,7 @@ package my.denis3119.task_api.configs
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -27,7 +28,7 @@ class JwtFilter(
             if (username != null && SecurityContextHolder.getContext().authentication == null) {
                 val userDetails = userDetailsService.loadUserByUsername(username)
                 if (JwtUtil.isTokenValid(token, username)) {
-                    val auth = org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                    val auth = UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.authorities
                     )
                     auth.details = WebAuthenticationDetailsSource().buildDetails(request)

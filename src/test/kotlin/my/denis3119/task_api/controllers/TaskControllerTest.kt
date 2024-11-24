@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -43,11 +44,11 @@ class TaskControllerTest : AbstractControllerTest() {
         taskRepository.deleteAll()
         teamMemberRepository.deleteAll()
 
-        userId = teamMemberRepository.save(TeamMember(name = "admin", password = "test")).id
+        userId = teamMemberRepository.save(TeamMember(name = "admin", password = "admin")).id
     }
 
     @Test
-    fun createTask_positiveFlowMinimaParameters() {
+    fun createTask_positiveFlowWithMinimalParameters() {
         mockMvc.perform(
             post("/tasks")
                 .contentType("application/json")
@@ -65,15 +66,15 @@ class TaskControllerTest : AbstractControllerTest() {
             .andDo { print() }
             .andExpect(status().isCreated)
 
-        val tasks = taskRepository.findAll().first()
+        val task = taskRepository.findAll().first()
 
-        assertEquals("Test task", tasks.title)
-        assertEquals("Test description", tasks.description)
-        assertEquals(HIGH, tasks.priority)
-        assertNull(tasks.assignedTo)
-        assertEquals(NEW, tasks.status)
-        assertNull(tasks.dueDate)
-        assertNotNull(tasks.id)
+        assertEquals("Test task", task.title)
+        assertEquals("Test description", task.description)
+        assertEquals(HIGH, task.priority)
+        assertNull(task.assignedTo)
+        assertEquals(NEW, task.status)
+        assertNull(task.dueDate)
+        assertNotNull(task.id)
     }
 
     @Test
@@ -109,11 +110,11 @@ class TaskControllerTest : AbstractControllerTest() {
     }
 
     @Test
+    @Transactional
     fun assignTask_positiveFlow() {
-        createTask_positiveFlowMinimaParameters()
+        createTasks(1)
 
         val task = taskRepository.findAll().first()
-
         assertNull(task.assignedTo)
 
         val taskDto = mockMvc.perform(
@@ -130,8 +131,9 @@ class TaskControllerTest : AbstractControllerTest() {
 
 
     @Test
+    @Transactional
     fun updateTaskStatus_positiveFlow() {
-        createTask_positiveFlowMinimaParameters()
+        createTask_positiveFlowWithMinimalParameters()
 
         val task = taskRepository.findAll().first()
 
@@ -140,23 +142,16 @@ class TaskControllerTest : AbstractControllerTest() {
         assertNotNull(task.createdOn)
         assertNotNull(task.lastModified)
 
-        var taskDto = changeStatus(task, IN_PROGRESS)
+        var taskDto = changeStatus(task.id ?: 0, IN_PROGRESS)
 
         assertEquals(IN_PROGRESS, taskDto.status)
         assertNotNull(taskDto.startDate)
 
-        taskDto = changeStatus(task, COMPLETED)
+        taskDto = changeStatus(taskDto.id ?: 0, COMPLETED)
 
         assertEquals(COMPLETED, taskDto.status)
         assertNotNull(taskDto.endDate)
     }
-
-    /*
-    *     @GetMapping("/list")
-    fun list(
-        @PageableDefault(size = 20)
-        @SortDefault(value = ["createdOn"], direction = DESC) pageable: Pageable
-    ): Page<TaskDto> = taskService.list(pageable)*/
 
     @Test
     fun list() {
@@ -184,9 +179,9 @@ class TaskControllerTest : AbstractControllerTest() {
     }
 
 
-    private fun changeStatus(task: Task, status: TaskStatus): TaskDto {
+    private fun changeStatus(id: Long, status: TaskStatus): TaskDto {
         return mockMvc.perform(
-            patch("/tasks/{taskId}/status", task.id)
+            patch("/tasks/{taskId}/status", id)
                 .param("status", status.name)
         )
             .andDo { print() }

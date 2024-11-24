@@ -1,6 +1,7 @@
 package my.denis3119.task_api.dtos.task
 
 import my.denis3119.task_api.dtos.TeamMemberDto
+import my.denis3119.task_api.dtos.comment.CommentDto
 import my.denis3119.task_api.enums.TaskPriority
 import my.denis3119.task_api.enums.TaskStatus
 import java.time.LocalDateTime

@@ -1,4 +1,4 @@
-package my.denis3119.task_api.dtos.task
+package my.denis3119.task_api.dtos.comment
 
 import my.denis3119.task_api.dtos.TeamMemberDto
 import java.time.LocalDateTime

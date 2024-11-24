@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 class TeamMemberServiceImpl(
     private val teamMemberRepository: TeamMemberRepository
 ) : TeamMemberService {
+
     override fun findById(assignedToId: Long): TeamMember {
         return teamMemberRepository.findById(assignedToId)
             .orElseThrow { EntityNotFoundException("Team member with id $assignedToId not found") }

@@ -52,8 +52,6 @@ class TaskController(
         @SortDefault(value = ["createdOn"], direction = DESC) pageable: Pageable
     ): Page<TaskDto> = taskService.list(pageable)
 
-
-
 }
 
 

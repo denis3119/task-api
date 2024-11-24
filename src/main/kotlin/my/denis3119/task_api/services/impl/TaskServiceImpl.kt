@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 @Service
 class TaskServiceImpl(
     private val taskRepository: TaskRepository,
-    private val teamMemberService: TeamMemberService
+    private val teamMemberService: TeamMemberService,
 ) : TaskService {
 
     @Transactional
@@ -51,9 +51,11 @@ class TaskServiceImpl(
     }
 
 
-    private fun save(task: Task) = taskRepository.save(task).toDto()
+    private fun save(task: Task) =
+        taskRepository.save(task).also { println(it) }.toDto()
 
-    private fun findById(taskId: Long): Task =
+
+    override fun findById(taskId: Long): Task =
         taskRepository.findById(taskId)
             .orElseThrow { EntityNotFoundException("Task with id $taskId not found") }
 
