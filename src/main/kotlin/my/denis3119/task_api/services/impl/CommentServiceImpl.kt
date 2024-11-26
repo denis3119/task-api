@@ -1,6 +1,8 @@
 package my.denis3119.task_api.services.impl
 
+import my.denis3119.task_api.dtos.comment.CommentDto
 import my.denis3119.task_api.dtos.comment.CreateCommentDto
+import my.denis3119.task_api.mapper.CommentMapper.toDto
 import my.denis3119.task_api.models.Comment
 import my.denis3119.task_api.repositories.CommentRepository
 import my.denis3119.task_api.services.CommentService
@@ -19,5 +21,10 @@ class CommentServiceImpl(
         ).also {
             commentRepository.save(it)
         }
+    }
+
+    override fun list(taskId: Long): List<CommentDto> {
+        return commentRepository.findAllByTaskId(taskId)
+            .map { it.toDto() }
     }
 }

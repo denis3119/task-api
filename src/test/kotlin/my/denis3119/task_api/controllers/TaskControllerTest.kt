@@ -129,6 +129,16 @@ class TaskControllerTest : AbstractControllerTest() {
         assertEquals(userId, taskDto.assignedTo?.id)
     }
 
+    @Test
+    @Transactional
+    fun assignTask_notFoundTask() {
+        mockMvc.perform(
+            post("/tasks/{taskId}/assign/{userId}", 100500, userId)
+        )
+            .andDo { print() }
+            .andExpect(status().isNotFound)
+    }
+
 
     @Test
     @Transactional

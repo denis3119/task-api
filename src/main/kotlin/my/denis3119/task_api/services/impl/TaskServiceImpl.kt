@@ -39,6 +39,7 @@ class TaskServiceImpl(
 
     @Transactional
     override fun updateTaskStatus(taskId: Long, newStatus: TaskStatus): TaskDto {
+
         val task = findById(taskId).apply {
             status = newStatus
         }

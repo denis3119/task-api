@@ -1,5 +1,6 @@
 package my.denis3119.task_api.controllers.advice
 
+import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -41,6 +42,16 @@ class GlobalExceptionHandler {
         return ErrorResponse(
             status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             error = "Internal Server Error",
+            message = ex.localizedMessage
+        )
+    }
+
+    @ExceptionHandler(EntityNotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun handleEntityNotFoundException(ex: EntityNotFoundException): ErrorResponse {
+        return ErrorResponse(
+            status = HttpStatus.NOT_FOUND.value(),
+            error = "Entity Not Found",
             message = ex.localizedMessage
         )
     }
